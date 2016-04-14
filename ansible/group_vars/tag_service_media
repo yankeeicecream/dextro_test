@@ -1,6 +1,6 @@
 ---
 
-git_repo: git@github.com:dextro-research/MediaStore_example.git
+git_repo: https://github.com/dextro-research/MediaStore_example.git
 instance_type: t2.medium
 instance_ami: ami-fce3c696
 instance_security_group: "{{env}}-{{service_name}}-app"
