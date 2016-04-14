@@ -1,0 +1,15 @@
+[program:media_app]
+directory={{ flask_app_home }}
+{% if venv is defined %}
+command={{venv}}/bin/gunicorn -k {{ gunicorn_worker_type|default('sync') }} -w {{ gunicorn_number_of_workers|default(8) }} -t {{ gunicorn_timeout|default(60) }} --access-logfile={{flask_log_dir}}/gunicorn_access.log --error-logfile={{flask_log_dir}}/gunicorn_error.log -b 127.0.0.1:{{service_port}} {{flask_app_program}}:app
+{% else %}
+command=gunicorn --access-logfile={{flask_log_dir}}/gunicorn_access.log --error-logfile={{flask_log_dir}}/gunicorn_error.log -b 127.0.0.1:{{op_service_port}} {{flask_app_main}}:app
+{% endif %}
+
+user=ubuntu
+autostart=true
+autorestart=true
+redirect_stderr=True
+environment={%- for key, value in supervisord_env_vars.iteritems() %}
+            {{ key }}='{{ value }}',
+        {% endfor %}

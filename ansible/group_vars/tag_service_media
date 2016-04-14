@@ -1,0 +1,22 @@
+---
+
+git_repo: git@github.com:dextro-research/MediaStore_example.git
+instance_type: t2.medium
+instance_ami: ami-fce3c696
+instance_security_group: "{{env}}-{{service_name}}-app"
+instance_subnet_id: subnet-cfb316e4
+venv: media
+
+flask_app_home: /home/ubuntu/media
+flask_app_program: service
+flask_log_dir: /var/log/gunicorn
+service_port: 5000
+gunicorn_worker_type: eventlet
+gunicorn_number_of_workers: 8
+gunicorn_timeout: 60
+nginx_num_of_workers: 5
+nginx_connections_per_worker: 768
+supervisord_env_vars:
+  HOME: "{{ flask_app_home }}"
+  DATABASE_STRING: "postgresql://root:tiotaDc42@qa-dextro-media.catjmbqmtndk.us-east-1.rds.amazonaws.com/media"
+  ENVIRONMENT: 'Development'

@@ -1,0 +1,23 @@
+---
+- name: install supervisord
+  pip: name=supervisor state=present
+
+- name: make supervisord.d directory
+  file: dest={{supervisord_d_path}} state=directory mode=0755 owner=root group=root
+
+- name: make supervisord log directory
+  file: dest=/var/log/supervisord state=directory
+
+- name: install config files
+  copy: src=supervisord.conf dest=/etc/supervisord.conf
+
+- name: install supervisor upstart config
+  copy: src=supervisord-upstart.conf dest=/etc/init/supervisord.conf
+  when: ansible_os_family == "Debian"
+
+- name: start supervisord
+  service: name=supervisord state=started
+
+- name: install logrotate for supervisord
+  template: src=logrotate-supervisord.j2 dest=/etc/logrotate.d/supervisord owner=root
+  when: supervisord_logrotate_enabled is defined and supervisord_logrotate_enabled == true

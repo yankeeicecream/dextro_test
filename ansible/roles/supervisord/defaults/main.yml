@@ -1,0 +1,6 @@
+---
+# defaults file for supervisord
+
+supervisord_logrotate_enabled: true
+supervisord_d_path: /etc/supervisord.d
+supervisord_log_retention: 7

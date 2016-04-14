@@ -1,0 +1,57 @@
+---
+
+- name: Create ELB security groups
+  ec2_group:
+    name: "{{env}}-{{ service_name }}-elb"
+    description: "{{env}}-{{ service_name }}-elb"
+    state: present
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ vpc_region }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: icmp
+        from_port: 0
+        to_port: -1
+        cidr_ip: 0.0.0.0/0
+
+- name: Create Flask app security group
+  ec2_group:
+    name: "{{env}}-{{service_name}}-app"
+    description: "{{env}}-{{ service_name }}-app"
+    state: present
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ vpc_region }}"
+    rules:
+      - proto: all
+        group_name: "{{env}}-{{ service_name }}-app"
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        group_name: "{{env}}-{{ service_name }}-elb"
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        group_name: "{{env}}-{{ service_name }}-elb"
+      - proto: tcp
+        from_port: 5000
+        to_port: 5000
+        group_name: "{{env}}-{{ service_name }}-elb"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: "{{ office_ip }}"

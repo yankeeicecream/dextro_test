@@ -1,0 +1,29 @@
+---
+
+- hosts: localhost
+  vars:
+    env: qa
+    service_name: media
+    office_ip: "69.46.234.29/32"
+  tasks:
+    - include_vars: "group_vars/tag_env_{{ env }}"
+    - include_vars: "group_vars/tag_service_{{ service_name }}"
+    - name: run provision stack sec group
+      include: "provision_stack_secgrp.yml"
+    - name: provision media server
+      ec2:
+        key_name: "connie_dextro"
+        region: "{{ vpc_region }}"
+        instance_type: "{{ instance_type }}"
+        image: "{{ instance_ami }}"
+        group: "{{ instance_security_group }}"
+        vpc_subnet_id: "{{ instance_subnet_id  }}"
+        assign_public_ip: yes
+        instance_profile_name: "appserver"
+        wait: no
+        instance_tags:
+          service: media
+        count: 1
+      register: node_id
+
+- hosts: tag_service_media

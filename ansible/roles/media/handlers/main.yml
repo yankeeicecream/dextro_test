@@ -1,0 +1,17 @@
+---
+
+- name: reload supervisord
+  become: true
+  service: name=supervisord state=reloaded
+
+- name: restart supervisord
+  become: true
+  service: name=supervisord state=restarted
+
+- name: restart service apps
+  become: true
+  command: supervisorctl restart all
+
+- name: start nginx
+  become: true
+  command: /etc/init.d/nginx start

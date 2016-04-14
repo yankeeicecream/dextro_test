@@ -1,0 +1,30 @@
+---
+
+- hosts: tag_service_media
+  pre_tasks:
+    - name: install neccessary packages
+      apt: name={{ item }} state=present update_cache=yes
+      with_items:
+          - libpcre3-dev
+          - openssl
+          - libssl-dev
+          - unattended-upgrades
+          - postgresql-client
+          - git
+          - python-pip
+          - python-dev
+          - libpq-dev
+
+    - name: install nginx     # can remove if I include nginx role
+      apt: name=nginx state=present
+
+    - name: upgrade pip to latest
+      pip: name=pip state=latest
+
+    - name: install gunicorn using pip
+      pip: name=gunicorn version=19.4
+
+  roles:
+    #- nginx        # uncomment when I have time
+    - supervisord
+    - media

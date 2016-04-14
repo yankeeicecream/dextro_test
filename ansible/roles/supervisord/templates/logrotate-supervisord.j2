@@ -1,0 +1,9 @@
+/var/log/supervisord/*.log {
+        daily
+        missingok
+        rotate {{ supervisord_log_retention | default(7) }}
+        compress
+        delaycompress
+        notifempty
+        sharedscripts
+}

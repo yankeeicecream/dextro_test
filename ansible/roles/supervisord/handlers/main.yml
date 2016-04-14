@@ -1,0 +1,9 @@
+---
+
+- name: restart supervisord
+  sudo: true
+  service: name=supervisord state=restarted
+
+- name: reload supervisord
+  sudo: true
+  service: name=supervisord state=reloaded
