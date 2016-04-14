@@ -25,9 +25,8 @@
     update=yes
     accept_hostkey=yes
     track_submodules=yes
-    force="{{ git_repo_force_clean|default('no') }}"
   with_items:
-    - { repo_url: "{{ git_repo_url }}", version: "{{git_repo_version}}" }
+    - { repo_url: "{{ git_repo_url }}", version: "master" }
   register: git_output
   tags: deploy
 
@@ -37,6 +36,11 @@
   notify: restart service apps
   tags: deploy
 
+- name: run setup
+  command: python setup.py install
+  args:
+    chdir: "{{ flask_app_home }}"
+    
 - name: install supervisord config
   template: src=supervisord.j2 dest=/etc/supervisord.d/flask.conf owner=root group=root mode=0755
   notify:
