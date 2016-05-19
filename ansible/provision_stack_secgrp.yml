@@ -48,9 +48,13 @@
         to_port: 443
         group_name: "{{env}}-{{ service_name }}-elb"
       - proto: tcp
-        from_port: 5000
-        to_port: 5000
+        from_port: 3001
+        to_port: 3001
         group_name: "{{env}}-{{ service_name }}-elb"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_name: "jumpserver"
       - proto: tcp
         from_port: 22
         to_port: 22
